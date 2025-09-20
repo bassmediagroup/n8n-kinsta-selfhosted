@@ -1,24 +1,29 @@
-# Use the Debian-based image so apt-get is available
-FROM n8nio/n8n:latest-debian
+# Alpine-based n8n image (uses apk)
+FROM n8nio/n8n:latest
 
 USER root
 
-# Install Chromium + fonts/tools
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Install Chromium + fonts/tools on Alpine
+RUN apk add --no-cache \
       chromium \
-      fonts-liberation \
-      fonts-noto-color-emoji \
+      nss \
+      freetype \
+      harfbuzz \
+      ttf-freefont \
+      ttf-liberation \
+      font-noto \
+      font-noto-emoji \
       ca-certificates \
       wget \
-      jq && \
-    rm -rf /var/lib/apt/lists/*
+      jq
 
-# Puppeteer: use system Chromium
+# Puppeteer: point to Alpine's Chromium binary
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# Helpful in containers
+ENV CHROMIUM_FLAGS="--no-sandbox --disable-dev-shm-usage"
 
-# Optional: allow fs/path in Code nodes, and external 'puppeteer'
+# (Optional) allow Code nodes to use fs/path and require('puppeteer')
 ENV NODE_FUNCTION_ALLOW_BUILTIN=fs,path,os
 ENV NODE_FUNCTION_ALLOW_EXTERNAL=puppeteer
 
