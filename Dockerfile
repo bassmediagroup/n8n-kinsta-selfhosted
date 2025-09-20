@@ -1,9 +1,9 @@
-# Base: official n8n image
-FROM n8nio/n8n:latest
+# Use the Debian-based image so apt-get is available
+FROM n8nio/n8n:latest-debian
 
 USER root
 
-# Install a system Chromium + fonts for better rendering
+# Install Chromium + fonts/tools
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       chromium \
@@ -14,17 +14,13 @@ RUN apt-get update && \
       jq && \
     rm -rf /var/lib/apt/lists/*
 
-# Tell Puppeteer to use system Chromium (skip bundling)
+# Puppeteer: use system Chromium
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
-# Optional: allow fs/path in Code nodes (useful for saving cookies)
+# Optional: allow fs/path in Code nodes, and external 'puppeteer'
 ENV NODE_FUNCTION_ALLOW_BUILTIN=fs,path,os
-
-# Optional: allow requiring puppeteer in Code node if you ever need it
 ENV NODE_FUNCTION_ALLOW_EXTERNAL=puppeteer
 
-# n8n runs as "node"; its home is /home/node
 USER node
 WORKDIR /home/node
-
