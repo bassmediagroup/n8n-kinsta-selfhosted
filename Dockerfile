@@ -27,3 +27,4 @@ ENV NODE_FUNCTION_ALLOW_EXTERNAL=puppeteer
 # n8n runs as "node"; its home is /home/node
 USER node
 WORKDIR /home/node
+
