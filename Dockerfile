@@ -18,7 +18,7 @@ RUN apk add --no-cache \
       jq
 
 # Puppeteer: point to Alpine's Chromium binary
-ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Helpful in containers
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-dev-shm-usage"
