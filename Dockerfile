@@ -36,6 +36,4 @@ RUN mkdir -p /home/node/.cache /home/node/.config /tmp && \
 ENV XDG_CACHE_HOME=/home/node/.cache \
     XDG_CONFIG_HOME=/home/node/.config \
     XDG_RUNTIME_DIR=/tmp \
-    PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 USER node
