@@ -19,7 +19,7 @@ RUN apk add --no-cache \
 
 # Puppeteer: point to Alpine's Chromium binary
 # ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Helpful in containers
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-dev-shm-usage"
 
@@ -36,4 +36,5 @@ RUN mkdir -p /home/node/.cache /home/node/.config /tmp && \
 ENV XDG_CACHE_HOME=/home/node/.cache \
     XDG_CONFIG_HOME=/home/node/.config \
     XDG_RUNTIME_DIR=/tmp \
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 USER node
