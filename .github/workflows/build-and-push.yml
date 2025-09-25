@@ -4,6 +4,11 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
+    inputs:
+      n8n_version:
+        description: "Override n8n version (e.g. 1.53.0)"
+        required: false
+        type: string
 
 env:
   IMAGE_NAME: n8n-chromium
@@ -33,12 +38,22 @@ jobs:
       - name: Login to GHCR
         run: echo "${{ github.token }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
 
+      - name: Resolve n8n version
+        id: ver
+        run: |
+          if [ -n "${{ github.event.inputs.n8n_version }}" ]; then
+            echo "chosen=${{ github.event.inputs.n8n_version }}" >> $GITHUB_OUTPUT
+          else
+            echo "chosen=${{ env.N8N_VERSION }}" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build and Push (GHCR)
         run: |
           IMAGE_TAG_BASE=ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}
+          N8N_VER=${{ steps.ver.outputs.chosen }}
           docker buildx build \
-            --build-arg N8N_VERSION=${{ env.N8N_VERSION }} \
-            -t $IMAGE_TAG_BASE:${{ env.N8N_VERSION }} \
+            --build-arg N8N_VERSION=$N8N_VER \
+            -t $IMAGE_TAG_BASE:$N8N_VER \
             -t $IMAGE_TAG_BASE:latest \
             --push .
 
@@ -46,9 +61,10 @@ jobs:
         if: env.DOCKERHUB_USERNAME && env.DOCKERHUB_TOKEN
         run: |
           IMAGE_TAG_BASE=${{ secrets.DOCKERHUB_USERNAME}}/${{ env.IMAGE_NAME }}
+          N8N_VER=${{ steps.ver.outputs.chosen }}
           docker buildx build \
-            --build-arg N8N_VERSION=${{ env.N8N_VERSION }} \
-            -t $IMAGE_TAG_BASE:${{ env.N8N_VERSION }} \
+            --build-arg N8N_VERSION=$N8N_VER \
+            -t $IMAGE_TAG_BASE:$N8N_VER \
             -t $IMAGE_TAG_BASE:latest \
             --push .
         env:
