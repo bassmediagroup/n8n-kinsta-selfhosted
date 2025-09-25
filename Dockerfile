@@ -45,4 +45,6 @@ ENV \
 WORKDIR /home/node
 USER node
 
-# (Optional) you can add: HEALTHCHECK CMD wget -q --spider http://localhost:5678/healthz || exit 1
+# Healthcheck (n8n exposes /healthz once ready)
+HEALTHCHECK --interval=30s --timeout=5s --start-period=40s --retries=3 \
+    CMD wget -q -O /dev/null http://localhost:5678/healthz || exit 1
