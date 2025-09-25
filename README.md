@@ -30,6 +30,13 @@ $env:N8N_BASIC_AUTH_PASSWORD='strongPassword123!'
 docker compose up -d --build
 ```
 
+Load from `.env` file instead of inline env vars:
+```powershell
+Copy-Item .env.example .env
+# edit .env then:
+docker compose up -d --build
+```
+
 ### GitHub Actions (CI)
 Workflow file: `.github/workflows/build-and-push.yml`
 
@@ -79,6 +86,52 @@ Set `WEBHOOK_URL` (or `WEBHOOK_TUNNEL_URL` if using tunnels) so that external we
 
 ### Manual Build Dispatch Version Override (CI)
 You can manually run the GitHub Action and specify a different `n8n` version via the workflow input. (See updated workflow: it accepts an input `n8n_version`.)
+
+### Secrets & Encryption
+Create a strong encryption key (32+ chars) so credential data remains decryptable across restarts:
+```powershell
+openssl rand -base64 48 | ForEach-Object { $_ -replace "`n","" }
+```
+Place it in `.env` as `N8N_ENCRYPTION_KEY=...` (or set in Kinsta UI). Changing it after storing credentials invalidates them.
+
+Recommended sensitive variables (do not commit real values):
+- `N8N_ENCRYPTION_KEY`
+- `POSTGRES_PASSWORD`
+- `N8N_BASIC_AUTH_PASSWORD`
+- Any API keys used inside workflows (store in n8n credentials where possible)
+
+### Database (Postgres) vs Default SQLite
+The compose file now includes a Postgres 15 service. Benefits:
+- Better concurrency & reliability
+- Easier scaling (externalize DB later)
+
+Local usage:
+```powershell
+docker compose up -d --build
+```
+Data persists in the named volume `pg_data`. For production / Kinsta use a managed Postgres if possible; set:
+```
+DB_TYPE=postgresdb
+DB_POSTGRESDB_HOST=<host>
+DB_POSTGRESDB_PORT=5432
+DB_POSTGRESDB_DATABASE=<db>
+DB_POSTGRESDB_USER=<user>
+DB_POSTGRESDB_PASSWORD=<pass>
+```
+
+### Upgrading n8n
+1. Trigger workflow with new version in `n8n_version` input (or adjust `.env` / build arg).
+2. Confirm image builds & vulnerability scan passes.
+3. Deploy new tag to Kinsta.
+4. Roll back by redeploying previous tag if issues occur.
+
+### Vulnerability Scanning
+The CI workflow runs a Trivy scan and fails on HIGH/CRITICAL. To temporarily ignore failures, remove `exit-code: '1'` or restrict severity.
+
+### Persistence Summary
+- Workflows & config: `n8n_data` volume (`/home/node/.n8n`)
+- Postgres data: `pg_data` volume (`/var/lib/postgresql/data`)
+
 
 ### Override n8n Version
 ```powershell
