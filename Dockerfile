@@ -28,6 +28,7 @@ RUN apk add --no-cache \
         && mkdir -p /home/node/.cache /home/node/.config /tmp \
         && chown -R node:node /home/node /tmp
 
+<<<<<<< HEAD
 # Single ENV layer for clarity & fewer layers
 ENV \
     # Chromium / Puppeteer
@@ -43,6 +44,27 @@ ENV \
     XDG_RUNTIME_DIR=/tmp
 
 WORKDIR /home/node
+=======
+# Puppeteer: point to Alpine's Chromium binary
+# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# Helpful in containers
+ENV CHROMIUM_FLAGS="--no-sandbox --disable-dev-shm-usage"
+
+# (Optional) allow Code nodes to use fs/path and require('puppeteer')
+ENV NODE_FUNCTION_ALLOW_BUILTIN=fs,path,os
+ENV NODE_FUNCTION_ALLOW_EXTERNAL=puppeteer
+
+USER node
+WORKDIR /home/node
+
+USER root
+RUN mkdir -p /home/node/.cache /home/node/.config /tmp && \
+    chown -R node:node /home/node /tmp
+ENV XDG_CACHE_HOME=/home/node/.cache \
+    XDG_CONFIG_HOME=/home/node/.config \
+    XDG_RUNTIME_DIR=/tmp \
+>>>>>>> parent of bebbfe7 (Uncomment PUPPETEER_EXECUTABLE_PATH in Dockerfile for Chromium binary)
 USER node
 
 # Healthcheck (n8n exposes /healthz once ready)
