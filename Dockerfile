@@ -1,24 +1,19 @@
-# Alpine-based n8n image (uses apk)
-FROM n8nio/n8n:latest
+# Debian-based n8n image (uses apt-get)FROM n8nio/n8n:latest
 
 USER root
 
-# Install Chromium + fonts/tools on Alpine
-RUN apk add --no-cache \
-      chromium \
-      nss \
-      freetype \
-      harfbuzz \
-      ttf-freefont \
-      ttf-liberation \
-      font-noto \
-      font-noto-emoji \
-      ca-certificates \
-      wget \
-      jq
+# Install Chromium + fonts/tools on DebianRUN apk add --no-cache \
+RUN apt-get update && apt-get install -y \
+    chromium \
+    fonts-noto \
+    fonts-noto-color-emoji \
+    fonts-liberation \
+    ca-certificates \
+    wget \
+    jq \
+    && rm -rf /var/lib/apt/lists/*
 
-# Puppeteer: point to Alpine's Chromium binary
-# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+# Puppeteer: point to Chromium binary# ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
 # ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
 # Helpful in containers
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-dev-shm-usage"
