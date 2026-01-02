@@ -3,7 +3,7 @@ FROM n8nio/n8n:latest
 
 USER root
 
-# Install Chromium + fonts/tools on DebianRUN apk add --no-cache \
+# Install Chromium + fonts/tools on DebianR
 RUN apt-get update && apt-get install -y \
     chromium \
     fonts-noto \
