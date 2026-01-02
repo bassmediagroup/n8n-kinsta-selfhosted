@@ -1,4 +1,5 @@
-# Debian-based n8n image (uses apt-get)FROM n8nio/n8n:latest
+# Debian-based n8n image (uses apt-get)
+FROM n8nio/n8n:latest
 
 USER root
 
