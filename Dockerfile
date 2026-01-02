@@ -1,24 +1,22 @@
-# Alpine-based n8n image (uses apk)
+# Debian-based n8n image (n8nio/n8n:latest is Debian, not Alpine)
 FROM n8nio/n8n:latest
 
 USER root
 
-# Install Chromium + fonts/tools on Alpine
-RUN apk add --no-cache \
+# Install Chromium + fonts/tools on Debian
+RUN apt-get update && apt-get install -y \
     chromium \
-    nss \
-    freetype \
-    harfbuzz \
-    ttf-freefont \
-    ttf-liberation \
-    font-noto \
-    font-noto-emoji \
+    fonts-noto \
+    fonts-noto-color-emoji \
+    fonts-liberation \
     ca-certificates \
     wget \
-    jq
+    jq \
+    && rm -rf /var/lib/apt/lists/*
 
-# Puppeteer: point to Chromium binary$ ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
-# ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+# Puppeteer: point to Chromium binary
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 # Helpful in containers
 ENV CHROMIUM_FLAGS="--no-sandbox --disable-dev-shm-usage"
@@ -37,6 +35,6 @@ RUN mkdir -p /home/node/.cache /home/node/.config /tmp && \
 ENV XDG_CACHE_HOME=/home/node/.cache \
     XDG_CONFIG_HOME=/home/node/.config \
     XDG_RUNTIME_DIR=/tmp \
-    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+    PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 USER node
