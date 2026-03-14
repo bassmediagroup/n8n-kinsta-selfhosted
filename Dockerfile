@@ -27,9 +27,7 @@ RUN apk add --no-cache \
     freetype \
     harfbuzz \
     ca-certificates \
-    ttf-freefont \
-    nodejs \
-    yarn
+    ttf-freefont
 
 # Set Puppeteer environment variables
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
