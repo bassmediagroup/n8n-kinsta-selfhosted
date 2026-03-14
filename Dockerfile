@@ -7,6 +7,23 @@ USER root
 # Install Chromium and dependencies for Puppeteer
 RUN apk add --no-cache \
     chromium \
+        glib \
+            gcompat \
+    libgcc \
+    libstdc++ \
+    dbus-libs \
+    libx11 \
+    libxcomposite \
+    libxdamage \
+    libxext \
+    libxfixes \
+    libxrandr \
+    libgobject-2.0 \
+    pango \
+    cairo \
+    alsa-lib \
+    mesa-gl \
+    eudev-libs \
     nss \
     freetype \
     harfbuzz \
