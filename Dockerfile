@@ -18,7 +18,6 @@ RUN apk add --no-cache \
     libxext \
     libxfixes \
     libxrandr \
-    libgobject-2.0 \
     pango \
     cairo \
     alsa-lib \
