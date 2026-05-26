@@ -15,7 +15,7 @@ RUN apk add --no-cache \
   font-noto-emoji
 
 # Stage 2: Build on official n8n image with Chromium support
-FROM docker.n8n.io/n8nio/n8n:latest
+FROM n8nio/n8n:latest
 
 USER root
 
