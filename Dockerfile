@@ -19,14 +19,14 @@ USER root
 
 # Copy Chromium and all its dependencies from the Alpine image
 COPY --from=chromium-installer /usr/lib/chromium/ /usr/lib/chromium/
-COPY --from-chromium-installer /usr/bin/chromium-browser /usr/bin/chromium-browser
-COPY --from-chromium-installer /lib/ /lib/
+COPY --from=chromium-installer /usr/bin/chromium-browser /usr/bin/chromium-browser
+COPY --from=chromium-installer /lib/ /lib/
 
 # Copy fonts
-COPY --from-chromium-installer /usr/share/fonts/ /usr/share/fonts/
+COPY --from=chromium-installer /usr/share/fonts/ /usr/share/fonts/
 
 # Chromium wrapper script for Docker-friendly flags
-COPY <<EOF /usr/bin/chromium-wrapper
+COPY <<'EOF' /usr/bin/chromium-wrapper
 #!/bin/sh
 exec chromium-browser \
  --no-sandbox \
@@ -45,5 +45,4 @@ RUN ln -sf /usr/bin/chromium-wrapper /usr/bin/chromium-browser
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true \
  PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser \
  NODE_OPTIONS=--max-old-space-size=4096
-
 USER node
